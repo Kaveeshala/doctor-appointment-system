@@ -1,1 +1,18 @@
 @import "tailwindcss";
+
+@theme {
+  --color-med-dark: #2d3250;
+  --color-med-card: #424769;
+  --color-med-slate: #676f9d;
+  --color-med-accent: #f9b17a;
+}
+
+body {
+  background-color: var(--color-med-dark);
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+a.active hr {
+  display: block;
+}
