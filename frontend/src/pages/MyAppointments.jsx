@@ -164,7 +164,7 @@ const MyAppointments = () => {
               </div>
 
               {/* Action Buttons (Pay Here & Cancel Appointment) */}
-              <div className='flex flex-row md:flex-col items-center gap-3 w-full md:w-48 justify-end pt-4 md:pt-0 border-t md:border-t-0 border-white/10'>
+              <div className='flex flex-col sm:flex-row md:flex-col items-center gap-3 w-full md:w-48 justify-end pt-4 md:pt-0 border-t md:border-t-0 border-white/10'>
                 {/* Pay Here Button */}
                 {!item.isCancelled && (
                   <>

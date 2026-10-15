@@ -214,7 +214,7 @@ const Contact = () => {
 
             <button
               type='submit'
-              className='mt-2 flex items-center justify-center gap-2 bg-med-accent text-med-dark font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-med-accent/30'
+              className='mt-2 w-full sm:w-auto flex items-center justify-center gap-2 bg-med-accent text-med-dark font-semibold px-8 py-3.5 rounded-xl hover:opacity-90 transition-all duration-300 cursor-pointer shadow-lg hover:shadow-med-accent/30'
             >
               <Send className='w-4 h-4' />
               <span>Send Message</span>

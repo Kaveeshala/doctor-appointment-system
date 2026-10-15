@@ -43,7 +43,22 @@ const Doctors = () => {
 
       <div className="flex flex-col sm:flex-row items-start gap-8">
         {/* Speciality Filter Sidebar */}
-        <div className="flex flex-wrap sm:flex-col gap-3 w-full sm:w-64 text-sm shrink-0">
+        <div className="flex sm:flex-col gap-2.5 overflow-x-auto sm:overflow-visible w-full sm:w-60 pb-2 sm:pb-0 no-scrollbar shrink-0">
+          {/* All Doctors option */}
+          <button
+            onClick={() => {
+              navigate("/doctors");
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            className={`whitespace-nowrap px-4 py-2 sm:py-2.5 rounded-full sm:rounded-xl border transition-all duration-200 cursor-pointer text-xs sm:text-sm text-center sm:text-left ${
+              !speciality
+                ? "bg-med-accent text-med-dark font-semibold border-med-accent shadow-md"
+                : "bg-med-card/40 hover:bg-med-card text-gray-200 border-white/10 hover:border-white/20"
+            }`}
+          >
+            All Doctors
+          </button>
+
           {specialities.map((item) => {
             const isActive =
               speciality && speciality.toLowerCase() === item.value.toLowerCase();
@@ -58,7 +73,7 @@ const Doctors = () => {
                   }
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }}
-                className={`w-full text-left px-4 py-2.5 rounded-xl border transition-all duration-200 cursor-pointer ${
+                className={`whitespace-nowrap px-4 py-2 sm:py-2.5 rounded-full sm:rounded-xl border transition-all duration-200 cursor-pointer text-xs sm:text-sm text-center sm:text-left ${
                   isActive
                     ? "bg-med-accent text-med-dark font-semibold border-med-accent shadow-md"
                     : "bg-med-card/40 hover:bg-med-card text-gray-200 border-white/10 hover:border-white/20"

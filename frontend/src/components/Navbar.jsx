@@ -224,7 +224,7 @@ function Navbar() {
             <button
               onClick={() => {
                 closeMenu();
-                navigate('/login');
+                navigate('/create-account');
               }}
               className="w-full bg-med-accent text-med-dark py-3 rounded-full font-semibold hover:opacity-90 transition-all cursor-pointer shadow-md"
             >

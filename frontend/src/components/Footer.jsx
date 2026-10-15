@@ -5,10 +5,10 @@ const Footer = () => {
   const navigate = useNavigate()
 
   return (
-    <footer className='mt-20 text-gray-300'>
-      <div className='flex flex-col sm:grid grid-cols-[3fr_1fr_1fr] gap-14 my-10 text-sm'>
+    <footer className='mt-16 sm:mt-20 text-gray-300'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2.5fr_1fr_1fr] gap-8 sm:gap-10 md:gap-14 my-10 text-sm'>
         {/* Left Section - Brand & Bio */}
-        <div>
+        <div className='sm:col-span-2 lg:col-span-1'>
           <div 
             onClick={() => {
               navigate('/')

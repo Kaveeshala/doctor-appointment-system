@@ -24,11 +24,11 @@ const CreateAccount = () => {
   }
 
   return (
-    <div className='min-h-[80vh] flex items-center justify-center py-8 sm:py-14'>
-      <div className='w-full max-w-4xl bg-med-card/30 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row backdrop-blur-md'>
+    <div className='min-h-[75vh] flex items-center justify-center py-4 sm:py-12'>
+      <div className='w-full max-w-4xl bg-med-card/30 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row backdrop-blur-md'>
         
         {/* Left Side: Create Account Image & Brand Overlay */}
-        <div className='w-full md:w-1/2 relative min-h-[280px] sm:min-h-[360px] md:min-h-[540px] overflow-hidden flex flex-col justify-end p-6 sm:p-10'>
+        <div className='w-full md:w-1/2 relative min-h-[220px] sm:min-h-[320px] md:min-h-[540px] overflow-hidden flex flex-col justify-end p-5 sm:p-8 md:p-10'>
           <img
             src={createAccountImg}
             alt='Doctor Caring Stethoscope'
@@ -38,11 +38,11 @@ const CreateAccount = () => {
           <div className='absolute inset-0 bg-gradient-to-t from-med-dark via-med-dark/50 to-transparent' />
 
           {/* Left overlay text */}
-          <div className='relative z-10 flex flex-col gap-2'>
-            <div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-med-card/70 border border-white/10 text-med-accent text-xs font-semibold w-max backdrop-blur-sm'>
+          <div className='relative z-10 flex flex-col gap-1.5 sm:gap-2'>
+            <div className='inline-flex items-center gap-2 px-3 py-1 rounded-full bg-med-card/70 border border-white/10 text-med-accent text-[11px] sm:text-xs font-semibold w-max backdrop-blur-sm'>
               <span>Join Prescripto</span>
             </div>
-            <h2 className='text-2xl sm:text-3xl font-bold text-white leading-tight'>
+            <h2 className='text-xl sm:text-2xl md:text-3xl font-bold text-white leading-tight'>
               Compassionate Care For You & Your Family
             </h2>
             <p className='text-gray-300 text-xs sm:text-sm line-clamp-2'>
@@ -52,7 +52,7 @@ const CreateAccount = () => {
         </div>
 
         {/* Right Side: Create Account Form */}
-        <div className='w-full md:w-1/2 p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-med-card/40'>
+        <div className='w-full md:w-1/2 p-5 sm:p-8 lg:p-12 flex flex-col justify-center bg-med-card/40'>
           <div className='mb-6'>
             <h2 className='text-2xl sm:text-3xl font-bold text-white'>Create Account</h2>
             <p className='text-gray-300 text-sm mt-1.5'>

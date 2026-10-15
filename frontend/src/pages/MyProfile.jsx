@@ -273,13 +273,13 @@ const MyProfile = () => {
         </div>
 
         {/* Action Buttons */}
-        <div className='pt-6 border-t border-white/10 flex flex-wrap items-center justify-end gap-3'>
+        <div className='pt-6 border-t border-white/10 flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-3'>
           {isEdit ? (
             <>
               <button
                 type='button'
                 onClick={handleCancelEdit}
-                className='px-6 py-3 rounded-xl border border-white/20 text-gray-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all cursor-pointer flex items-center gap-2'
+                className='w-full sm:w-auto px-6 py-3 rounded-xl border border-white/20 text-gray-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2'
               >
                 <X className='w-4 h-4' />
                 Cancel
@@ -287,7 +287,7 @@ const MyProfile = () => {
               <button
                 type='button'
                 onClick={handleSave}
-                className='px-7 py-3 rounded-xl bg-med-accent text-med-dark hover:opacity-90 text-sm font-semibold transition-all cursor-pointer shadow-lg shadow-med-accent/20 flex items-center gap-2'
+                className='w-full sm:w-auto px-7 py-3 rounded-xl bg-med-accent text-med-dark hover:opacity-90 text-sm font-semibold transition-all cursor-pointer shadow-lg shadow-med-accent/20 flex items-center justify-center gap-2'
               >
                 <Save className='w-4 h-4' />
                 Save Information
@@ -297,7 +297,7 @@ const MyProfile = () => {
             <button
               type='button'
               onClick={handleStartEdit}
-              className='px-8 py-3 rounded-xl border border-med-accent text-med-accent hover:bg-med-accent hover:text-med-dark text-sm font-semibold transition-all duration-300 cursor-pointer shadow-md flex items-center gap-2'
+              className='w-full sm:w-auto px-8 py-3 rounded-xl border border-med-accent text-med-accent hover:bg-med-accent hover:text-med-dark text-sm font-semibold transition-all duration-300 cursor-pointer shadow-md flex items-center justify-center gap-2'
             >
               <Edit3 className='w-4 h-4' />
               Edit Profile

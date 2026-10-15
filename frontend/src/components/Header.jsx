@@ -49,7 +49,7 @@ const Header = () => {
   }
 
   return (
-    <div className="relative w-full h-[360px] sm:h-[440px] md:h-[500px] overflow-hidden rounded-md shadow-xl group">
+    <div className="relative w-full h-[400px] sm:h-[460px] md:h-[520px] overflow-hidden rounded-2xl md:rounded-3xl shadow-xl group">
       {slides.map((slide, index) => (
         <div
           key={index}
@@ -61,31 +61,31 @@ const Header = () => {
           <img
             src={slide.image}
             alt={slide.title}
-            className="w-full h-full object-cover rounded-md"
+            className="w-full h-full object-cover rounded-2xl md:rounded-3xl"
           />
 
           {/* Gradient Overlay for Text Readability */}
-          <div className="absolute inset-0 rounded-md bg-gradient-to-t from-med-dark via-med-dark/75 to-transparent sm:bg-gradient-to-r sm:from-med-dark sm:via-med-dark/80 sm:to-transparent flex flex-col justify-end sm:justify-center p-6 sm:p-12 md:p-16">
-            <div className="max-w-xl text-white">
+          <div className="absolute inset-0 rounded-2xl md:rounded-3xl bg-gradient-to-t from-med-dark via-med-dark/80 to-transparent sm:bg-gradient-to-r sm:from-med-dark sm:via-med-dark/85 sm:to-transparent flex flex-col justify-end sm:justify-center p-5 sm:p-10 md:p-16">
+            <div className="max-w-xl text-white pb-6 sm:pb-0">
               {/* Badge / Tag */}
-              <span className="inline-block px-3 py-1 text-xs sm:text-sm font-semibold tracking-wide uppercase bg-med-card text-med-accent rounded-full mb-3 border border-med-slate/40">
+              <span className="inline-block px-3 py-1 text-[11px] sm:text-xs font-semibold tracking-wide uppercase bg-med-card text-med-accent rounded-full mb-2 sm:mb-3 border border-med-slate/40">
                 {slide.tag}
               </span>
 
               {/* Heading */}
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-bold leading-tight mb-3 text-white drop-shadow-sm">
+              <h1 className="text-xl sm:text-3xl md:text-5xl font-bold leading-snug sm:leading-tight mb-2 sm:mb-3 text-white drop-shadow-sm">
                 {slide.title}
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-base text-gray-200 mb-6 line-clamp-2 sm:line-clamp-none max-w-lg leading-relaxed">
+              <p className="text-xs sm:text-sm md:text-base text-gray-200 mb-4 sm:mb-6 line-clamp-2 sm:line-clamp-none max-w-lg leading-relaxed">
                 {slide.description}
               </p>
 
               {/* CTA Button */}
               <button
                 onClick={() => navigate('/doctors')}
-                className="bg-med-accent text-med-dark font-semibold px-6 sm:px-8 py-2.5 sm:py-3 rounded-full hover:opacity-90 hover:shadow-lg transition-all cursor-pointer inline-flex items-center gap-2 text-sm sm:text-base"
+                className="bg-med-accent text-med-dark font-semibold px-5 sm:px-8 py-2.5 sm:py-3 rounded-full hover:opacity-90 hover:shadow-lg transition-all cursor-pointer inline-flex items-center gap-2 text-xs sm:text-base"
               >
                 <span>{slide.cta}</span>
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,9 +102,9 @@ const Header = () => {
         type="button"
         onClick={prevSlide}
         aria-label="Previous Slide"
-        className="absolute left-3 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-med-dark/70 hover:bg-med-dark text-white border border-med-slate/30 flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 hover:scale-105 cursor-pointer backdrop-blur-xs"
+        className="absolute left-2 sm:left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-med-dark/70 hover:bg-med-dark text-white border border-med-slate/30 flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 hover:scale-105 cursor-pointer backdrop-blur-xs"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M15 19l-7-7 7-7" />
         </svg>
       </button>
@@ -114,24 +114,24 @@ const Header = () => {
         type="button"
         onClick={nextSlide}
         aria-label="Next Slide"
-        className="absolute right-3 sm:right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-med-dark/70 hover:bg-med-dark text-white border border-med-slate/30 flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 hover:scale-105 cursor-pointer backdrop-blur-xs"
+        className="absolute right-2 sm:right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-med-dark/70 hover:bg-med-dark text-white border border-med-slate/30 flex items-center justify-center transition-all opacity-80 group-hover:opacity-100 hover:scale-105 cursor-pointer backdrop-blur-xs"
       >
-        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M9 5l7 7-7 7" />
         </svg>
       </button>
 
       {/* Slide Indicators / Dots */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      <div className="absolute bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5 sm:gap-2">
         {slides.map((_, index) => (
           <button
             key={index}
             onClick={() => setCurrentSlide(index)}
             aria-label={`Go to slide ${index + 1}`}
-            className={`h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
+            className={`h-2 sm:h-2.5 rounded-full transition-all duration-300 cursor-pointer ${
               index === currentSlide
-                ? "w-8 bg-med-accent"
-                : "w-2.5 bg-white/50 hover:bg-white/80"
+                ? "w-6 sm:w-8 bg-med-accent"
+                : "w-2 sm:w-2.5 bg-white/50 hover:bg-white/80"
             }`}
           />
         ))}

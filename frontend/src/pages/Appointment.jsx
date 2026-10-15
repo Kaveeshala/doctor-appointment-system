@@ -85,9 +85,9 @@ const Appointment = () => {
         {/* Doctor Card */}
         <div className='bg-med-card/50 border border-white/10 rounded-2xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row gap-6 md:gap-8 items-start'>
           {/* Doctor Image */}
-          <div className='w-full sm:w-72 shrink-0 overflow-hidden rounded-xl bg-med-dark/40 flex items-center justify-center'>
+          <div className='w-full sm:w-72 max-h-72 sm:max-h-none shrink-0 overflow-hidden rounded-2xl bg-med-dark/40 flex items-center justify-center'>
             <img
-              className='w-full h-auto object-cover object-top rounded-xl'
+              className='w-full h-full sm:h-auto object-cover object-top rounded-2xl'
               src={docInfo.image}
               alt={docInfo.name}
             />
@@ -134,7 +134,7 @@ const Appointment = () => {
           <p className='text-xl font-semibold text-white'>Booking slots</p>
 
           {/* Days of week */}
-          <div className='flex gap-3 items-center w-full overflow-x-auto mt-4 py-2'>
+          <div className='flex gap-3 items-center w-full overflow-x-auto mt-4 py-2 no-scrollbar'>
             {docSlots.length > 0 &&
               docSlots.map((item, index) => {
                 const dateObj = new Date()
@@ -165,7 +165,7 @@ const Appointment = () => {
           </div>
 
           {/* Time slots for selected day */}
-          <div className='flex items-center gap-3 w-full overflow-x-auto mt-4 py-2'>
+          <div className='flex items-center gap-3 w-full overflow-x-auto mt-4 py-2 no-scrollbar'>
             {docSlots.length > 0 && docSlots[slotIndex]?.length > 0 ? (
               docSlots[slotIndex].map((item, index) => (
                 <p
@@ -188,7 +188,7 @@ const Appointment = () => {
           </div>
 
           {/* Book appointment button */}
-          <button className='bg-med-accent text-med-dark text-sm font-medium px-12 py-3 rounded-full mt-6 hover:bg-white transition-all duration-300 shadow-md cursor-pointer'>
+          <button className='w-full sm:w-auto bg-med-accent text-med-dark text-sm font-semibold px-12 py-3.5 rounded-full mt-6 hover:bg-white transition-all duration-300 shadow-md cursor-pointer'>
             Book an appointment
           </button>
         </div>
