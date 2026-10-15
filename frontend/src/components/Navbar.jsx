@@ -79,7 +79,7 @@ function Navbar() {
           </div>
         ) : (
           <button 
-            onClick={() => navigate('/login')} 
+            onClick={() => navigate('/create-account')} 
             className="hidden md:block bg-med-accent text-med-dark px-6 py-2 rounded-full font-semibold hover:opacity-90 transition-all cursor-pointer shadow-sm"
           >
             Create Account
