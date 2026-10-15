@@ -15,7 +15,7 @@ const CTA = () => {
         </h2>
         <button
           onClick={() => {
-            navigate('/login')
+            navigate('/create-account')
             window.scrollTo({ top: 0, behavior: 'smooth' })
           }}
           className='bg-med-dark text-white hover:bg-med-card font-semibold text-sm sm:text-base px-8 py-3.5 rounded-full mt-6 transition-all duration-300 hover:scale-105 shadow-lg cursor-pointer'
