@@ -32,8 +32,8 @@ const Login = () => {
       } else {
         toast.info('Doctor login route will be configured here.')
       }
-    } catch {
-      // Error handling will be bound with toast notifications once backend route is wired
+    } catch (error) {
+      toast.error(error.response?.data?.message || error.message || 'Login failed')
     } finally {
       setIsLoading(false)
     }
