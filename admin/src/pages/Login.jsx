@@ -1,6 +1,5 @@
 import { useState, useContext } from 'react'
 import { AdminContext } from '../context/AdminContext'
-import { DoctorContext } from '../context/DoctorContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 
@@ -31,7 +30,7 @@ const Login = () => {
         }
         
       } else {
-        
+        toast.info('Doctor login route will be configured here.')
       }
     } catch {
       // Error handling will be bound with toast notifications once backend route is wired
