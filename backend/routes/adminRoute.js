@@ -9,7 +9,10 @@ const adminRouter = express.Router()
 
 adminRouter.post('/add-doctor', authAdmin, upload.single('image'), addDoctor)
 adminRouter.post('/login', loginAdmin)
-adminRouter.get('/alldoctors', authAdmin , allDoctors)
-adminRouter.post('/change-availability', authAdmin , changeAvailability)
+adminRouter.post('/all-doctors', authAdmin, allDoctors)
+adminRouter.get('/all-doctors', authAdmin, allDoctors)
+adminRouter.post('/alldoctors', authAdmin, allDoctors)
+adminRouter.get('/alldoctors', authAdmin, allDoctors)
+adminRouter.post('/change-availability', authAdmin, changeAvailability)
 
 export default adminRouter
