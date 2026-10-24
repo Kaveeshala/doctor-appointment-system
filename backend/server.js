@@ -4,6 +4,7 @@ import 'dotenv/config'
 import connectDB from './config/mogodb.js'
 import connectCloudinary from './config/cloudinary.js'
 import adminRouter from './routes/adminRoute.js'
+import doctorRouter from './routes/doctorRoute.js'
 
 //app config
 const app = express()
@@ -17,6 +18,7 @@ app.use(cors())
 
 //api end points
 app.use('/api/admin', adminRouter)     //localhost:4000/api/admin
+app.use('/api/doctor', doctorRouter)
 
 app.get('/', (eq, res) => {
     res.send("API Working")
