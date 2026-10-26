@@ -1,6 +1,5 @@
-import { createContext } from 'react'
+import { createContext, useState } from 'react'
 import axios from 'axios'
-import { useState } from 'react'
 import { useEffect } from 'react'
 import { toast } from 'react-toastify'
 
@@ -10,6 +9,7 @@ const AppContextProvider = (props) => {
   const currencySymbol = 'Rs.'
   const backendURL = (import.meta.env.VITE_BACKEND_URL || 'http://localhost:4000').replace(/\/$/, '')
   const [doctors, setDoctors] = useState([])
+   const [token,setToken] = useState(localStorage.getItem('token')? localStorage.getItem('token'):false)
 
   const getDoctorsData = async () => {
     try {
@@ -29,6 +29,9 @@ const AppContextProvider = (props) => {
     doctors,
     getDoctorsData,
     currencySymbol,
+    token, setToken,
+    backendURL,
+    backendUrl: backendURL
   }
 
   useEffect(() => {
