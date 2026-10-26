@@ -8,16 +8,16 @@ import jwt from "jsonwebtoken"
 //api to register user
 const registerUser = async (req, res) => {
     try {
-        const {name, email, password} = req.body
+        const { name, email, password } = req.body
 
         if (!name || !email || !password) {
-            return res.json({success: false, message: "Missing details"})
-        } 
+            return res.json({ success: false, message: "Missing details" })
+        }
         if (!validator.isEmail(email)) {
-            return res.json({success: false, message: "Enter valid email"})
+            return res.json({ success: false, message: "Enter valid email" })
         }
         if (password.length < 8) {
-            return res.json({success: false, message: "Enter a strong password"})
+            return res.json({ success: false, message: "Enter a strong password" })
         }
 
         //hashing user password
@@ -32,39 +32,54 @@ const registerUser = async (req, res) => {
 
         const newUser = new userModel(userData)
         const user = await newUser.save()
-        const token = jwt.sign({id:user._id}, process.env.JWT_SECRET)
-        res.json({success: true, token})
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+        res.json({ success: true, token })
 
     } catch (error) {
         console.log(error);
-        res.json({success: false, message: error.message})      
+        res.json({ success: false, message: error.message })
     }
 }
 
 //api for user login
 const loginUser = async (req, res) => {
     try {
-        const {email, password} = req.body
-        const user = await userModel.findOne({email})
+        const { email, password } = req.body
+        const user = await userModel.findOne({ email })
 
         if (!user) {
-          return res.json({success: false, message: "User not found"})  
+            return res.json({ success: false, message: "User not found" })
         }
 
-        const isMatch = await bcrypty.compare(password,user.password)
+        const isMatch = await bcrypty.compare(password, user.password)
 
         if (isMatch) {
-            const token = jwt.sign({id: user._id}, process.env.JWT_SECRET)
-            res.json({success: true, token})
-        } else{
-            res.json({success: false, message: "Invalid credentials"})
+            const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET)
+            res.json({ success: true, token })
+        } else {
+            res.json({ success: false, message: "Invalid credentials" })
         }
 
 
     } catch (error) {
         console.log(error);
-        res.json({success: false, message: error.message})
+        res.json({ success: false, message: error.message })
     }
 }
 
-export {registerUser, loginUser}
+//api to get user profile
+const getProfile = async (req, res) => {
+
+    try {
+        const { userId } = req.body
+        const userData = await userModel.findById(userId).select('-password')
+
+        res.json({ success: true, userData })
+    } catch (error) {
+        console.log(error);
+        res.json({ success: false, message: error.message })
+
+    }
+}
+
+export { registerUser, loginUser, getProfile }
