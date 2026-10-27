@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import loginImg from '../assets/login.jpg'
 import { Mail, Lock, Eye, EyeOff, User, ArrowRight } from 'lucide-react'
+import { useContext } from 'react'
+import { AppContext } from '../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 
 const Login = () => {
   const navigate = useNavigate()
@@ -12,18 +16,45 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
-  const handleSubmit = (e) => {
+  //destructure token state & backend url variable
+  const { backendUrl, backendURL, token, setToken } = useContext(AppContext)
+  const apiUrl = backendUrl || backendURL
+
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // In future integration, dispatch authentication to backend
-    console.log({ state, name, email, password, rememberMe })
-    navigate('/')
-    window.scrollTo({ top: 0, behavior: 'smooth' })
+    try {
+      if (state === 'Sign Up' || state === 'sign up') {
+        const { data } = await axios.post(apiUrl + '/api/user/register', { name, password, email })
+        if (data.success) {
+          localStorage.setItem('token', data.token)
+          setToken(data.token)
+        } else {
+          toast.error(data.message)
+        }
+      } else {
+        const { data } = await axios.post(apiUrl + '/api/user/login', { password, email })
+        if (data.success) {
+          localStorage.setItem('token', data.token)
+          setToken(data.token)
+        } else {
+          toast.error(data.message)
+        }
+      }
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
+
+  useEffect(() => {
+    if (token) {
+      navigate('/')
+    }
+  }, [token])
 
   return (
     <div className='min-h-[75vh] flex items-center justify-center py-4 sm:py-12'>
+
       <div className='w-full max-w-4xl bg-med-card/30 border border-white/10 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row backdrop-blur-md'>
-        
         {/* Left Side: Stethoscope Image & Brand Overlay */}
         <div className='w-full md:w-1/2 relative min-h-[220px] sm:min-h-[320px] md:min-h-[520px] overflow-hidden flex flex-col justify-end p-5 sm:p-8 md:p-10'>
           <img
