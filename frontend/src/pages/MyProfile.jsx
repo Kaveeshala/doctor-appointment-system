@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
-import profilePic from '../assets/profile pic.avif'
+import React, { useState, useContext, useEffect } from 'react'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 import {
   User,
   Mail,
@@ -12,57 +13,164 @@ import {
   X,
   CheckCircle2,
   ShieldCheck,
+  Loader2,
 } from 'lucide-react'
+import { AppContext } from '../context/AppContext'
 
 const MyProfile = () => {
+
+  const { userData, setUserData, token, backendUrl, backendURL, loadUserProfileData } = useContext(AppContext) 
+  const apiUrl = backendUrl || backendURL
+
   const [isEdit, setIsEdit] = useState(false)
+  const [image, setImage] = useState(false)
+  const [tempData, setTempData] = useState({})
   const [successMessage, setSuccessMessage] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
 
-  const [userData, setUserData] = useState({
-    name: 'Edward Vincent',
-    image: profilePic,
-    email: 'edward.vincent@example.com',
-    phone: '+1 (415) 555-0198',
-    address: {
-      line1: '57th Cross, Richmond',
-      line2: 'Circle, Church Road, London',
-    },
-    gender: 'Male',
-    dob: '2000-01-20',
-  })
+  // Keep tempData synchronized with userData
+  useEffect(() => {
+    if (userData) {
+      setTempData({
+        ...userData,
+        address: userData.address ? { ...userData.address } : { line1: '', line2: '' },
+      })
+    }
+  }, [userData])
 
-  // Backup for cancel action
-  const [tempData, setTempData] = useState({ ...userData })
+  // Client-side image compression for fast Cloudinary upload
+  const compressImage = (file) => {
+    return new Promise((resolve) => {
+      if (!file || !file.type.startsWith('image/')) {
+        resolve(file)
+        return
+      }
+      if (file.size < 250 * 1024) {
+        resolve(file)
+        return
+      }
+      const reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload = (event) => {
+        const img = new Image()
+        img.src = event.target.result
+        img.onload = () => {
+          const canvas = document.createElement('canvas')
+          const MAX_SIZE = 500
+          let width = img.width
+          let height = img.height
 
-  const handleImageChange = (e) => {
+          if (width > height) {
+            if (width > MAX_SIZE) {
+              height *= MAX_SIZE / width
+              width = MAX_SIZE
+            }
+          } else {
+            if (height > MAX_SIZE) {
+              width *= MAX_SIZE / height
+              height = MAX_SIZE
+            }
+          }
+
+          canvas.width = Math.round(width)
+          canvas.height = Math.round(height)
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                const optimizedFile = new File([blob], file.name.replace(/\.[^/.]+$/, "") + ".jpg", {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                })
+                resolve(optimizedFile)
+              } else {
+                resolve(file)
+              }
+            },
+            'image/jpeg',
+            0.85
+          )
+        }
+        img.onerror = () => resolve(file)
+      }
+      reader.onerror = () => resolve(file)
+    })
+  }
+
+  const updateUserProfileData = async () => {
+    try {
+      setIsSaving(true)
+      const formData = new FormData()
+      formData.append('name', tempData.name || '')
+      formData.append('phone', tempData.phone || '')
+      formData.append('address', JSON.stringify(tempData.address || { line1: '', line2: '' }))
+      formData.append('gender', tempData.gender || 'Not Selected')
+      formData.append('dob', tempData.dob || 'Not Selected')
+
+      if (image) {
+        formData.append('image', image)
+      }
+
+      const { data } = await axios.post(apiUrl + '/api/user/update-profile', formData, {
+        headers: { token },
+      })
+
+      if (data.success) {
+        toast.success(data.message)
+        setSuccessMessage(data.message || 'Profile details updated successfully!')
+        setTimeout(() => {
+          setSuccessMessage('')
+        }, 3500)
+        await loadUserProfileData()
+        setIsEdit(false)
+        setImage(false)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleImageChange = async (e) => {
     const file = e.target.files[0]
     if (file) {
-      const imageUrl = URL.createObjectURL(file)
+      const optimizedFile = await compressImage(file)
+      setImage(optimizedFile)
+      const imageUrl = URL.createObjectURL(optimizedFile)
       setTempData((prev) => ({ ...prev, image: imageUrl }))
     }
   }
 
   const handleStartEdit = () => {
-    setTempData({ ...userData, address: { ...userData.address } })
+    setTempData({
+      ...userData,
+      address: userData.address ? { ...userData.address } : { line1: '', line2: '' },
+    })
+    setImage(false)
     setIsEdit(true)
   }
 
   const handleCancelEdit = () => {
-    setTempData({ ...userData, address: { ...userData.address } })
+    setTempData({
+      ...userData,
+      address: userData.address ? { ...userData.address } : { line1: '', line2: '' },
+    })
+    setImage(false)
     setIsEdit(false)
   }
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault()
-    setUserData({ ...tempData, address: { ...tempData.address } })
-    setIsEdit(false)
-    setSuccessMessage('Profile details updated successfully!')
-    setTimeout(() => {
-      setSuccessMessage('')
-    }, 3500)
+    await updateUserProfileData()
   }
 
-  return (
+  return userData && (
     <div className='max-w-3xl mx-auto py-8 sm:py-12'>
       {/* Title */}
       <div className='mb-8 text-center sm:text-left'>
@@ -193,11 +301,11 @@ const MyProfile = () => {
                   <input
                     type='text'
                     placeholder='Address Line 1'
-                    value={tempData.address.line1}
+                    value={tempData.address?.line1 || ''}
                     onChange={(e) =>
                       setTempData({
                         ...tempData,
-                        address: { ...tempData.address, line1: e.target.value },
+                        address: { ...(tempData.address || {}), line1: e.target.value },
                       })
                     }
                     className='w-full px-3 py-2 rounded-lg bg-med-dark/80 border border-white/10 text-white text-sm focus:border-med-accent focus:outline-none'
@@ -205,11 +313,11 @@ const MyProfile = () => {
                   <input
                     type='text'
                     placeholder='Address Line 2'
-                    value={tempData.address.line2}
+                    value={tempData.address?.line2 || ''}
                     onChange={(e) =>
                       setTempData({
                         ...tempData,
-                        address: { ...tempData.address, line2: e.target.value },
+                        address: { ...(tempData.address || {}), line2: e.target.value },
                       })
                     }
                     className='w-full px-3 py-2 rounded-lg bg-med-dark/80 border border-white/10 text-white text-sm focus:border-med-accent focus:outline-none'
@@ -217,8 +325,8 @@ const MyProfile = () => {
                 </div>
               ) : (
                 <p className='text-gray-200 font-medium leading-relaxed'>
-                  {userData.address.line1} <br />
-                  {userData.address.line2}
+                  {userData.address?.line1} <br />
+                  {userData.address?.line2}
                 </p>
               )}
             </div>
@@ -278,19 +386,30 @@ const MyProfile = () => {
             <>
               <button
                 type='button'
+                disabled={isSaving}
                 onClick={handleCancelEdit}
-                className='w-full sm:w-auto px-6 py-3 rounded-xl border border-white/20 text-gray-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2'
+                className='w-full sm:w-auto px-6 py-3 rounded-xl border border-white/20 text-gray-300 hover:text-white hover:bg-white/5 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-semibold transition-all cursor-pointer flex items-center justify-center gap-2'
               >
                 <X className='w-4 h-4' />
                 Cancel
               </button>
               <button
                 type='button'
+                disabled={isSaving}
                 onClick={handleSave}
-                className='w-full sm:w-auto px-7 py-3 rounded-xl bg-med-accent text-med-dark hover:opacity-90 text-sm font-semibold transition-all cursor-pointer shadow-lg shadow-med-accent/20 flex items-center justify-center gap-2'
+                className='w-full sm:w-auto px-7 py-3 rounded-xl bg-med-accent text-med-dark hover:opacity-90 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold transition-all cursor-pointer shadow-lg shadow-med-accent/20 flex items-center justify-center gap-2'
               >
-                <Save className='w-4 h-4' />
-                Save Information
+                {isSaving ? (
+                  <>
+                    <Loader2 className='w-4 h-4 animate-spin' />
+                    Saving Profile...
+                  </>
+                ) : (
+                  <>
+                    <Save className='w-4 h-4' />
+                    Save Information
+                  </>
+                )}
               </button>
             </>
           ) : (

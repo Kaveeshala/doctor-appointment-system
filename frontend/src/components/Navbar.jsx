@@ -5,7 +5,7 @@ import { AppContext } from "../context/AppContext";
 
 function Navbar() {
   const navigate = useNavigate();
-  const {token, setToken} = useContext(AppContext)
+  const {token, setToken, userData} = useContext(AppContext)
   const [showMenu, setShowMenu] = useState(false);
   const logout = () => {
     setToken(false)
@@ -52,10 +52,10 @@ function Navbar() {
 
       {/* Desktop Profile / CTA & Mobile Toggle Button */}
       <div className="flex items-center gap-4">
-        {token ? (
+        {token && userData ? (
           <div className="flex items-center gap-2 cursor-pointer group relative">
             <img 
-              src={profilePic} 
+              src={userData.image} 
               alt="Profile" 
               className="w-9 h-9 rounded-full object-cover ring-2 ring-med-accent/70"
             />
