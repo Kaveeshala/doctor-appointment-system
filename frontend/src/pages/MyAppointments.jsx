@@ -1,49 +1,84 @@
 import React, { useContext, useState } from 'react'
 import { AppContext } from '../context/AppContext'
 import { Calendar, Clock, MapPin, CheckCircle2, CreditCard, XCircle, AlertCircle } from 'lucide-react'
+import axios from 'axios'
 
 const MyAppointments = () => {
-  const { doctors, currencySymbol } = useContext(AppContext)
+  const { backendUrl, token } = useContext(AppContext)
+
+  const[appointments,setAppointments] = useState([])
+  const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+  const slotDateFormat = (slotDate) => {
+    const dateArray = slotDate.split('_')
+    return dateArray[0] + " " + months[Number(dateArray[1])] + " " + dateArray[2]
+  }
+
+  const getUserAppointments = async () => {
+    try {
+
+      const {data} = await axios.get(backendUrl + '/api/user/appointments', {headers: {token}})
+
+      if (data.success) {
+        setAppointments(data.appointments.reverse())
+        console.log(data.appointments);
+        
+      }
+      
+    } catch (error) {
+      consolelog(error);
+      toast.error(error.message)
+      
+    }
+  }
+
+  useEffect(()=>{
+    if (token) {
+      getUserAppointments()
+      
+    }
+
+  },[token])
 
   // 3 sample booked appointments initialized with first 3 doctors
-  const [appointments, setAppointments] = useState([
-    {
-      id: 'apt-1',
-      docIndex: 0,
-      address: {
-        line1: '57th Cross, Richmond',
-        line2: 'Circle, Church Road, London',
-      },
-      date: '25, Oct, 2026',
-      time: '10:30 AM',
-      isPaid: false,
-      isCancelled: false,
-    },
-    {
-      id: 'apt-2',
-      docIndex: 1,
-      address: {
-        line1: '27th Cross, Avenue Park',
-        line2: 'Bridge Street, Central District, London',
-      },
-      date: '28, Oct, 2026',
-      time: '02:00 PM',
-      isPaid: false,
-      isCancelled: false,
-    },
-    {
-      id: 'apt-3',
-      docIndex: 2,
-      address: {
-        line1: '14th Floor, Medical Towers',
-        line2: 'Sector 4, Kensington Square, London',
-      },
-      date: '02, Nov, 2026',
-      time: '04:30 PM',
-      isPaid: false,
-      isCancelled: false,
-    },
-  ])
+  // const [appointments, setAppointments] = useState([
+  //   {
+  //     id: 'apt-1',
+  //     docIndex: 0,
+  //     address: {
+  //       line1: '57th Cross, Richmond',
+  //       line2: 'Circle, Church Road, London',
+  //     },
+  //     date: '25, Oct, 2026',
+  //     time: '10:30 AM',
+  //     isPaid: false,
+  //     isCancelled: false,
+  //   },
+  //   {
+  //     id: 'apt-2',
+  //     docIndex: 1,
+  //     address: {
+  //       line1: '27th Cross, Avenue Park',
+  //       line2: 'Bridge Street, Central District, London',
+  //     },
+  //     date: '28, Oct, 2026',
+  //     time: '02:00 PM',
+  //     isPaid: false,
+  //     isCancelled: false,
+  //   },
+  //   {
+  //     id: 'apt-3',
+  //     docIndex: 2,
+  //     address: {
+  //       line1: '14th Floor, Medical Towers',
+  //       line2: 'Sector 4, Kensington Square, London',
+  //     },
+  //     date: '02, Nov, 2026',
+  //     time: '04:30 PM',
+  //     isPaid: false,
+  //     isCancelled: false,
+  //   },
+  // ])
 
   const [notification, setNotification] = useState('')
 
@@ -78,7 +113,7 @@ const MyAppointments = () => {
       {/* Notification Toast */}
       {notification && (
         <div className='mb-6 p-4 rounded-xl bg-med-card/80 border border-med-accent/40 text-white flex items-center gap-3 text-sm shadow-lg backdrop-blur-md animate-fade-in'>
-          <CheckCircle2 className='w-5 h-5 flex-shrink-0 text-med-accent' />
+          <CheckCircle2 className='w-5 h-5 shrink-0 text-med-accent' />
           <span>{notification}</span>
         </div>
       )}
@@ -102,7 +137,7 @@ const MyAppointments = () => {
                 <div className='w-28 h-32 sm:w-32 sm:h-36 rounded-2xl overflow-hidden bg-med-dark/60 border border-white/10 flex-shrink-0 shadow-md'>
                   {doctor.image ? (
                     <img
-                      src={doctor.image}
+                      src={item.dcoData.image}
                       alt={doctor.name}
                       className='w-full h-full object-cover object-top'
                     />
@@ -117,7 +152,7 @@ const MyAppointments = () => {
                 <div className='flex flex-col gap-2 text-center sm:text-left'>
                   <div>
                     <h3 className='text-lg sm:text-xl font-bold text-white flex items-center justify-center sm:justify-start gap-2'>
-                      {doctor.name}
+                      {item.docData.name}
                       {item.isCancelled && (
                         <span className='text-xs px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-400 border border-red-500/30 font-medium'>
                           Cancelled
@@ -130,7 +165,7 @@ const MyAppointments = () => {
                       )}
                     </h3>
                     <p className='text-med-accent text-xs sm:text-sm font-medium capitalize mt-0.5'>
-                      {doctor.speciality}
+                      {item.docData.speciality}
                     </p>
                   </div>
 
@@ -140,8 +175,8 @@ const MyAppointments = () => {
                       <MapPin className='w-3.5 h-3.5 text-med-accent' />
                       Address:
                     </span>
-                    <span className='text-gray-300'>{item.address.line1}</span>
-                    <span className='text-gray-400'>{item.address.line2}</span>
+                    <span className='text-gray-300'>{item.docData.address.line1}</span>
+                    <span className='text-gray-400'>{item.docData.address.line2}</span>
                   </div>
 
                   {/* Booked Date & Time */}
@@ -149,14 +184,14 @@ const MyAppointments = () => {
                     <div className='flex items-center gap-1.5 text-gray-300'>
                       <Calendar className='w-3.5 h-3.5 text-med-accent' />
                       <span>
-                        <strong className='text-white font-medium'>Date:</strong> {item.date}
+                        <strong className='text-white font-medium'>Date:</strong> {slotDateFormat(item.slotDate)}
                       </span>
                     </div>
                     <span className='text-gray-600 hidden sm:inline'>|</span>
                     <div className='flex items-center gap-1.5 text-gray-300'>
                       <Clock className='w-3.5 h-3.5 text-med-accent' />
                       <span>
-                        <strong className='text-white font-medium'>Time:</strong> {item.time}
+                        <strong className='text-white font-medium'>Time:</strong> {item.slotTime}
                       </span>
                     </div>
                   </div>
