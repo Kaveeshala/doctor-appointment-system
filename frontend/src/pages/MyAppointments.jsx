@@ -1,14 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AppContext } from '../context/AppContext'
-import { Calendar, Clock, MapPin, CheckCircle2, CreditCard, XCircle, AlertCircle } from 'lucide-react'
+import { Calendar, Clock, MapPin, CheckCircle2, CreditCard, XCircle, AlertCircle, Currency } from 'lucide-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { useNavigate } from 'react-router-dom'
 
 const MyAppointments = () => {
   const { backendUrl, token, getDoctorsData } = useContext(AppContext)
 
   const [appointments, setAppointments] = useState([])
   const months = ["", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "July", "Aug", "Sep", "Oct", "Nov", "Dec"]
+
+  const navigate = useNavigate()
 
   const slotDateFormat = (slotDate) => {
     const dateArray = slotDate.split('_')
@@ -34,27 +37,86 @@ const MyAppointments = () => {
   }
 
   const cancelAppointments = async (appointmentId) => {
-   try {
-    //console.log(appointmentId);
+    try {
+      //console.log(appointmentId);
 
-    const {data} = await axios.post(backendUrl + '/api/user/cancel-appointment', {appointmentId},{headers:{token}})
+      const { data } = await axios.post(backendUrl + '/api/user/cancel-appointment', { appointmentId }, { headers: { token } })
 
-    if (data.success) {
-      toast.success(data.message)
-      getUserAppointments()
-      getDoctorsData()
-      
-    }else {
-      toast.error(data.message)
-    }
-    
-    
-   } catch (error) {
-     console.log(error);
+      if (data.success) {
+        toast.success(data.message)
+        getUserAppointments()
+        getDoctorsData()
+
+      } else {
+        toast.error(data.message)
+      }
+
+
+    } catch (error) {
+      console.log(error);
       toast.error(error.message)
-    
-   }
+
+    }
   }
+
+  const initPay = (order) => {
+
+    const options = {
+      key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+      amount: order.amount,
+      currency: order.currency,
+      name: 'Appointment payment',
+      description: 'Appointment payment',
+      order_id: order.id,
+      receipt: order.receipt,
+      handler: async (response) => {
+        console.log(response);
+
+        try {
+
+          const { data } = await axios.post(backendUrl + '/api/user/verify-razorpay', response, { headers: { token } })
+
+          if (data.success) {
+            getUserAppointments()
+            navigate('/my-appointments')
+
+          }
+
+        } catch (error) {
+          console.log(error)
+          toast.error(error.message)
+          
+
+        }
+
+
+      }
+
+    }
+
+    const rzp = new window.Razorpay(options)
+    rzp.open()
+
+  }
+
+  const appointmentRazorPay = async (appointmentId) => {
+    try {
+      const { data } = await axios.post(backendUrl + '/api/user/payment-razorpay', { appointmentId }, { headers: { token } })
+
+      if (data.success) {
+        //console.log(data.order);
+        initPay(data.order)
+
+
+
+      }
+    } catch (error) {
+
+    }
+
+
+  }
+
 
   useEffect(() => {
     if (token) {
@@ -66,13 +128,13 @@ const MyAppointments = () => {
 
   const [notification, setNotification] = useState('')
 
-  const handlePay = (id, docName) => {
-    setAppointments((prev) =>
-      prev.map((apt) => (apt._id === id || apt.id === id ? { ...apt, isPaid: true, payment: true } : apt))
-    )
-    setNotification(`Payment successful for appointment with ${docName}!`)
-    setTimeout(() => setNotification(''), 3500)
-  }
+  // const handlePay = (id, docName) => {
+  //   setAppointments((prev) =>
+  //     prev.map((apt) => (apt._id === id || apt.id === id ? { ...apt, isPaid: true, payment: true } : apt))
+  //   )
+  //   setNotification(`Payment successful for appointment with ${docName}!`)
+  //   setTimeout(() => setNotification(''), 3500)
+  // }
 
   return (
     <div className='py-8 sm:py-12 max-w-5xl mx-auto'>
@@ -198,7 +260,7 @@ const MyAppointments = () => {
                         </button>
                       ) : (
                         <button
-                          onClick={() => handlePay(item._id || item.id, docData.name)}
+                          onClick={() => appointmentRazorPay(item._id)}
                           className='w-full py-2.5 px-4 rounded-xl border border-med-accent text-med-accent hover:bg-med-accent hover:text-med-dark text-xs sm:text-sm font-semibold transition-all duration-300 shadow-md flex items-center justify-center gap-1.5 cursor-pointer'
                         >
                           <CreditCard className='w-4 h-4' />
