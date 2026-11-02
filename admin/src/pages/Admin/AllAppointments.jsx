@@ -6,7 +6,7 @@ import cancel_button from "../../assets/cancel-button.svg"
 
 const AllAppointments = () => {
 
-  const { aToken, appointments, getAllAppointments } = useContext(AdminContext)
+  const { aToken, appointments, getAllAppointments, cancelAppointment } = useContext(AdminContext)
   const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const AllAppointments = () => {
             <p>{currency}{item.ammount}</p>
             {item.cancelled
               ? <p className="text-red-500 text-xs font-medium">Cancelled</p>
-              : <img className="w-10 cursor-pointer" src={cancel_button} alt="cancel" />
+              : <img onClick={() => cancelAppointment(item._id)} className="w-10 cursor-pointer" src={cancel_button} alt="cancel" />
 
             }
 
