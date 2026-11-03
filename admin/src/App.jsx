@@ -11,6 +11,9 @@ import AllAppointments from "./pages/Admin/AllAppointments";
 import AddDoctor from "./pages/Admin/AddDoctor";
 import DoctorsList from "./pages/Admin/DoctorsList";
 import { DoctorContext } from "./context/DoctorContext";
+import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
+import DoctorAppointment from "./pages/Doctor/DoctorAppointment";
+import DoctorProfile from "./pages/Doctor/DoctorProfile";
 
 const App = () => {
   const { aToken } = useContext(AdminContext);
@@ -24,6 +27,7 @@ const App = () => {
         <Sidebar />
         <main className="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 overflow-y-auto">
           <Routes>
+            {/* Admin Routes */}
             <Route path="/" element={<Dashboard />} />
             <Route path="/admin-dashbaord" element={<Dashboard />} />
             <Route path="/admin-dashboard" element={<Dashboard />} />
@@ -31,6 +35,11 @@ const App = () => {
             <Route path="/all-appointments" element={<AllAppointments />} />
             <Route path="/add-doctor" element={<AddDoctor />} />
             <Route path="/doctor-list" element={<DoctorsList />} />
+
+            {/* Doctor Routes */}
+            <Route path="/doctor-dashbaord" element={<DoctorDashboard />} />
+            <Route path="/doctor-appointment" element={<DoctorAppointment />} />
+            <Route path="/doctor-profile" element={<DoctorProfile />} />
           </Routes>
         </main>
       </div>
