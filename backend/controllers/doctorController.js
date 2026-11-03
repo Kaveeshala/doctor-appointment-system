@@ -98,7 +98,7 @@ const appointmentComplete = async (req, res) => {
 
 
 //API to cancel appointment for doctor panel
-const appointmentCancel = async () => {
+const appointmentCancel = async (req, res) => {
     try {
 
         const { docId, appointmentId } = req.body
