@@ -2,6 +2,7 @@ import { useState, useContext } from 'react'
 import { AdminContext } from '../context/AdminContext'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { DoctorContext } from '../context/DoctorContext'
 
 const Login = () => {
   const [state, setState] = useState('Admin') // 'Admin' or 'Doctor'
@@ -11,7 +12,8 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const {setAToken,backendUrl} = useContext(AdminContext)
+  const { setAToken, backendUrl } = useContext(AdminContext)
+  const { setDToken } = useContext(DoctorContext)
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
@@ -19,18 +21,31 @@ const Login = () => {
 
     try {
       if (state === 'Admin') {
-        const {data} = await axios.post(backendUrl + '/api/admin/login', {email,password})
+        const { data } = await axios.post(backendUrl + '/api/admin/login', { email, password })
 
         if (data.success) {
           localStorage.setItem('aToken', data.token)
           setAToken(data.token)
-          
-        }else {
+
+        } else {
           toast.error(data.message)
         }
-        
+
       } else {
-        toast.info('Doctor login route will be configured here.')
+        //toast.info('Doctor login route will be configured here.')
+
+        const data = await axios.post(backendUrl + 'api/doctor/login', { email, passowrd })
+
+        if (data.success) {
+          localStorage.setItem('dToken', data.token)
+          setDToken(data.token)
+          console.log(data.token);
+          
+
+        } else {
+          toast.error(data.message)
+        }
+
       }
     } catch (error) {
       toast.error(error.response?.data?.message || error.message || 'Login failed')
@@ -47,14 +62,14 @@ const Login = () => {
 
       {/* Main card */}
       <div className='w-full max-w-[420px] bg-white border border-slate-200/80 rounded-2xl sm:rounded-3xl shadow-xl shadow-indigo-100/40 p-6 sm:p-8 relative z-10 backdrop-blur-sm transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-100/60'>
-        
+
         {/* Brand header */}
         <div className='flex flex-col items-center mb-6 text-center'>
           <div className='flex items-center gap-2 mb-2'>
             <div className='w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold text-xl ring-4 ring-primary/5 shadow-inner'>
               {/* Prescripto cross icon */}
               <svg className='w-5 h-5 text-primary' fill='currentColor' viewBox='0 0 24 24'>
-                <path d='M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z'/>
+                <path d='M19 10.5h-5.5V5c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v5.5H5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5h5.5V19c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-5.5H19c.83 0 1.5-.67 1.5-1.5s-.67-1.5-1.5-1.5z' />
               </svg>
             </div>
             <div className='text-left leading-none'>
@@ -70,11 +85,10 @@ const Login = () => {
               type='button'
               id='role-admin-btn'
               onClick={() => setState('Admin')}
-              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
-                state === 'Admin'
+              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${state === 'Admin'
                   ? 'bg-white text-primary shadow-sm ring-1 ring-black/5'
                   : 'text-slate-500 hover:text-slate-700'
-              }`}
+                }`}
             >
               <svg className='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z' />
@@ -85,11 +99,10 @@ const Login = () => {
               type='button'
               id='role-doctor-btn'
               onClick={() => setState('Doctor')}
-              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${
-                state === 'Doctor'
+              className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-semibold transition-all duration-200 flex items-center justify-center gap-1.5 cursor-pointer ${state === 'Doctor'
                   ? 'bg-white text-primary shadow-sm ring-1 ring-black/5'
                   : 'text-slate-500 hover:text-slate-700'
-              }`}
+                }`}
             >
               <svg className='w-3.5 h-3.5' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                 <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z' />
@@ -143,7 +156,7 @@ const Login = () => {
               </label>
               <button
                 type='button'
-                onClick={() => {}}
+                onClick={() => { }}
                 className='text-xs text-primary hover:text-primary-dark font-medium transition-colors cursor-pointer'
               >
                 Forgot password?
