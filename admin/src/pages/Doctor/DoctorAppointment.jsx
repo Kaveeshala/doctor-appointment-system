@@ -5,7 +5,7 @@ import cancel_button from '../../assets/cancel-button.svg'
 import tick_button from '../../assets/tick-button.svg'
 
 const DoctorAppointment = () => {
-  const { dToken, appointments, getAppointments } = useContext(DoctorContext)
+  const { dToken, appointments, getAppointments, completeAppointment, cancelAppointment } = useContext(DoctorContext)
   const { calculateAge, slotDateFormat, currency } = useContext(AppContext)
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const DoctorAppointment = () => {
         </div>
 
         {appointments && appointments.length > 0 ? (
-          appointments.map((item, index) => (
+          appointments.reverse().map((item, index) => (
             <div
               key={item._id || index}
               className='flex flex-wrap justify-between max-sm:gap-3 sm:grid sm:grid-cols-[0.5fr_2fr_1fr_1fr_3fr_1fr_1fr] items-center text-slate-600 py-3.5 px-6 border-b border-slate-100 hover:bg-slate-50/80 transition-colors text-sm'
@@ -80,11 +80,13 @@ const DoctorAppointment = () => {
                       className='w-10 cursor-pointer hover:opacity-80 transition-opacity'
                       src={cancel_button}
                       alt="cancel"
+                      onClick={() => cancelAppointment(item._id)}
                     />
                     <img
                       className='w-10 cursor-pointer hover:opacity-80 transition-opacity'
                       src={tick_button}
                       alt="complete"
+                      onClick={() => completeAppointment(item._id)}
                     />
                   </div>
                 )}
