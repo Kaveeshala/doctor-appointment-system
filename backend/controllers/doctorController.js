@@ -106,10 +106,7 @@ const appointmentCancel = async (req, res) => {
         res.json({ success: false, message: error.message })
         
     }
-  } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
-  }
+  
 };
 
 //API to get dashboard data for doctor panel
